@@ -1,17 +1,7 @@
 services:
   - type: web
-    name: backend
-    env: node
-    plan: free
-    buildCommand: cd server && npm install
-    startCommand: cd server && npm start
-    envVars:
-      - key: NODE_ENV
-        value: production
-
-  - type: web
     name: frontend
     env: static
     plan: free
-    buildCommand: cd client && npm install && npm run build
+    buildCommand: npm install && npm run build
     staticPublishPath: client/dist
