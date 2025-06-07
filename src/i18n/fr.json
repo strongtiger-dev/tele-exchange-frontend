@@ -1,0 +1,14 @@
+{
+    "exchangeCrypto": "Exchange Crypto",
+    "youSend": "You send",
+    "youGet": "You get",
+    "estimatedRate": "Estimated rate",
+    "noExtraFees": "No extra fees",
+    "exchange": "Exchange",
+    "reviewUs": "Review us on Trustpilot",
+    "recipientWallet": "Recipient Wallet",
+    "enterAddress": "Enter XMR payout address",
+    "advancedSettings": "Advanced Settings",
+    "refundAddress": "Enter {{currency}} refund address"
+  }
+  
