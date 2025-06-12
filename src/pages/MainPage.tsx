@@ -15,7 +15,7 @@ export default function PrivateSwaps() {
     const [outsize, setOutsize] = useState(0);
     const [rate, setRate] = useState(1.0);
     const [fee, setFee] = useState(0);
-    const [tokenOptions, setTokenOptions] = useState<Token[]>([{}]);
+    const [tokenOptions, setTokenOptions] = useState<Token[]>([]);
 
     const onChangeToken = async () => {
         var data = await getRate( { user_id: "KTiger", symbol_1: sendToken, symbol_2: receiveToken });  //send setRate for async data updating
@@ -31,8 +31,8 @@ export default function PrivateSwaps() {
     useEffect( () => {
         const fetchData = async () => {
             try {
-              //let res = await getSymbolList({ user_id: "KTIGER" });
-              let res = await getSymbolList_coin();
+              let res = await getSymbolList({ user_id: "KTIGER" });
+              //let res = await getSymbolList_coin();
               setTokenOptions(res);
               console.log(res);
             } catch (err) {
@@ -42,15 +42,15 @@ export default function PrivateSwaps() {
         fetchData();
     }, []);
 
-    const onSwitchToken = () => {
-        var currentToken = sendToken;
-        setSendToken(receiveToken);
-        setReceiveToken(currentToken);
-        var lotsize = insize;
-        setInsize(outsize);
-        setOutsize(lotsize);
-        setRate( prev => 1.0/prev);
-    }
+    // const _onSwitchToken = () => {
+    //     var currentToken = sendToken;
+    //     setSendToken(receiveToken);
+    //     setReceiveToken(currentToken);
+    //     var lotsize = insize;
+    //     setInsize(outsize);
+    //     setOutsize(lotsize);
+    //     setRate( prev => 1.0/prev);
+    // }
 
     const handleChangeInsize = (e: React.ChangeEvent<HTMLInputElement> ) => {
         setInsize( Number(e.target.value)); 

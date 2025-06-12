@@ -25,7 +25,7 @@ export const QRScanner: React.FC<QRScannerProps> = ({ onScanSuccess }) => {
           setIsScanning(false);
         },
         (error) => {
-          // console.warn(`QR scan error:`, error)
+           console.warn(`QR scan error:`, error)
         }
       );
       setIsScanning(true);

@@ -9,6 +9,10 @@
     "paths": {
       "@/*": ["./src/*"]
     },
-    "typeRoots": ["./node_modules/@types", "./src/types"]
+    "typeRoots": ["./node_modules/@types", "./src/types"],
+
+    //build option flags
+    "noUnusedLocals": false,
+    "noUnusedParameters": false,
   }
 }

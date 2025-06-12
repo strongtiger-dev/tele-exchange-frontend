@@ -3,12 +3,11 @@
 import { io, Socket } from "socket.io-client";
 
 // Replace with your backend WebSocket server URL
-const URL = "http://localhost:3000"; // or your production server
-
+const URL = import.meta.env.VITE_API_BASE_URL;
 
 // Create and export a single socket instance
 export const socket: Socket = io(URL, {
-  withCredentials: true, // Optional: if your backend uses cookies
+  withCredentials: false, // Optional: if your backend uses cookies
   transports: ["websocket"], // Optional: force WebSocket
 });
 

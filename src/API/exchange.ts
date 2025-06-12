@@ -1,6 +1,5 @@
 import api from "@/lib/axios";
 import { Token } from "@/components/ui/combobox";
-import { CaseUpper } from "lucide-react";
 
 interface ExchangePayload {
   from: string;

@@ -8,7 +8,7 @@ import { QRScanner } from "@/components/qr/QRScanner";
 import { StepProgress } from "@/components/common/StepProgress"
 import { Copy } from "lucide-react";
 import { QRCodeDisplay } from "@/components/qr/QRCodeDisplay"
-import { getFee, getRate, sendConfirmInfo, getSymbolList, getSymbolList_coin } from "@/API/exchange"
+import { getFee, getRate, sendConfirmInfo, getSymbolList_coin } from "@/API/exchange"
 import { socket } from "@/lib/socket"
 
 
@@ -39,11 +39,11 @@ export function ExchangeCard(  {p_sendToken, p_receiveToken, p_insize}
 
     const [copied, setCopied] = useState(false);
 
-    const [toAddress, setToAddress] = useState("35GmPRNU4mFFknd4VWezPMhJPkse3JwK89");
-    const [exchangeId, setExchangeId] = useState("46fe1a4adb87fda");
+    const [toAddress, _setToAddress] = useState("35GmPRNU4mFFknd4VWezPMhJPkse3JwK89");
+    const [exchangeId, _setExchangeId] = useState("46fe1a4adb87fda");
     const resultWallet = "888tN...vup3H";
     const [step, setStep] = useState(0);
-    const [tokenOptions, setTokenOptions] = useState<Token[]>([{}]);
+    const [tokenOptions, setTokenOptions] = useState<Token[]>([]);
 
     const onChangeToken = async () => {
         var data = await getRate( { user_id: "KTiger", symbol_1: sendToken, symbol_2: receiveToken });  //send setRate for async data updating

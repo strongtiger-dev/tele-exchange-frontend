@@ -12,7 +12,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover"
 import { Button } from "@/components/ui/button"
-import { Check, ChevronsUpDown } from "lucide-react"
+import { ChevronsUpDown } from "lucide-react"
 import { cn } from "@/lib/utils"
 
 export type Token = {
