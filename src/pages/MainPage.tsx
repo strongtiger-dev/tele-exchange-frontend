@@ -4,7 +4,7 @@ import { Input } from "@/components/ui/input"
 import { Card, CardContent } from "@/components/ui/card"
 import { ExchangeDialog } from "./Exchange";
 import { TokenSelect } from "@/components/ui/combobox"
-import { getFee, getRate, getSymbolList, getSymbolList_coin } from "@/API/exchange";
+import { getFee, getRate, getSymbolList } from "@/API/exchange";
 import { Token } from "@/components/ui/combobox";
 
 export default function PrivateSwaps() {

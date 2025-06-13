@@ -48,17 +48,17 @@ interface ListPayload {
     user_id: string,
 }
 
-interface ListResponse {
-    message: Token[],
-}
+// interface ListResponse {
+//     message: Token[],
+// }
 
 export const submitExchange = async (payload: ExchangePayload): Promise<ExchangeResponse> => {
   const res = await api.post<ExchangeResponse>("main/exchange", payload);
   return res.data;
 };
 
-export const getSymbolList = async (payload: ListPayload): Promise<ListResponse> => {
-    const res = await api.post<ListResponse>("main/symbol_list", payload);
+export const getSymbolList = async (payload: ListPayload): Promise<Token[]> => {
+    const res = await api.post<Token[]>("main/symbol_list", payload);
     return res.data;
 };  
 
