@@ -36,13 +36,19 @@ export function ExchangeCard(  {p_sendToken, p_receiveToken, p_insize}
     const [receiveAddress, setReceiveAddress] = useState("");
     const [confirm, setConfirm] = useState(false);
     const [stage, setStage] = useState<"first" | "second" | "third">("first");
+    const resultWallet = "888tN...vup3H";
 
     const [copied, setCopied] = useState(false);
 
+    //Third Stage
     const [toAddress, _setToAddress] = useState("35GmPRNU4mFFknd4VWezPMhJPkse3JwK89");
     const [exchangeId, _setExchangeId] = useState("46fe1a4adb87fda");
-    const resultWallet = "888tN...vup3H";
+    const [leftTime, setLeftTime] = useState("");
+    const [createTime, setCreateTime] = useState("");
+
     const [step, setStep] = useState(0);
+    
+    //General
     const [tokenOptions, setTokenOptions] = useState<Token[]>([]);
 
     const onChangeToken = async () => {
@@ -60,26 +66,43 @@ export function ExchangeCard(  {p_sendToken, p_receiveToken, p_insize}
     useEffect(() => {
 
         const handleStepForward = (message: any) => {
+            //Need Check For number / charactor
             setStep(message);
             console.log("message arrived");
-          };
+        };
         
-          const handleConnect = () => {
+        const handleLeftTime = (message: any) => {
+            setLeftTime(message);
+            console.log("Left time message arrived");
+        };
+
+        const handleCreatTime = (message: any) => {
+            setCreateTime(message);
+            console.log("Create Time message arrived");
+        };
+        
+        const handleConnect = () => {
             console.log("Socket connected");
             socket.emit("init", { user_id: "KTiger" });
-          };
+        };
         
-          // Remove first to prevent duplication
-          socket.off("step_forward", handleStepForward);
-          socket.off("connect", handleConnect);
+        // Remove first to prevent duplication
+        socket.off("create_time", handleCreatTime);
+        socket.off("left_time", handleLeftTime);
+        socket.off("cur_status", handleStepForward);
+        socket.off("connect", handleConnect);
         
-          // Add fresh listeners
-          socket.on("step_forward", handleStepForward);
-          socket.on("connect", handleConnect);
+        // Add fresh listeners
+        socket.on("create_time", handleCreatTime);
+        socket.on("left_time", handleLeftTime);
+        socket.on("cur_status", handleStepForward);
+        socket.on("connect", handleConnect);
         
-          // Cleanup when component unmounts
-          return () => {
-            socket.off("step_forward", handleStepForward);
+        // Cleanup when component unmounts
+        return () => {
+            socket.off("create_time", handleCreatTime);
+            socket.off("left_time", handleLeftTime);
+            socket.off("cur_status", handleStepForward);
             socket.off("connect", handleConnect);
         };
     }, []);

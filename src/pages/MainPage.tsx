@@ -53,7 +53,7 @@ export default function PrivateSwaps() {
     // }
 
     const handleChangeInsize = (e: React.ChangeEvent<HTMLInputElement> ) => {
-        setInsize( Number(e.target.value)); 
+        setInsize( Number(e.target.value) ); 
         setOutsize( rate * Number(e.target.value) );
     }
 
@@ -140,9 +140,9 @@ export default function PrivateSwaps() {
                 <Card key={i} className="bg-gray-800 text-center p-4">
                 <CardContent>
                     <div className="flex justify-center mb-2">
-                    <img src={`/icon${i + 1}.png`} alt="icon" className="w-10 h-10" />
+                    <img src={`/icons/${i + 1}.png`} alt="icon" className="w-15 h-15" />
                     </div>
-                    <h3 className="font-semibold text-lg">{item.title}</h3>
+                    <h3 className="font-semibold text-lg text-white">{item.title}</h3>
                     <p className="text-sm text-gray-400 mt-2">{item.text}</p>
                 </CardContent>
                 </Card>
