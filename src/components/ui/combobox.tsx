@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import {
   Command,
   CommandEmpty,
@@ -18,7 +18,6 @@ import { cn } from "@/lib/utils"
 export type Token = {
   label: string
   value: string
-  icon: string
 }
 
 interface TokenSelectProps {
@@ -36,6 +35,33 @@ export function TokenSelect({
 }: TokenSelectProps) {
   const [open, setOpen] = useState(false)
   const selected = tokens.find((t) => t.value === value)
+
+  const iconMap: Record<string, () => Promise<any>> = {
+    BTC: () => import('cryptocurrency-icons/svg/color/btc.svg'),
+    ETH: () => import('cryptocurrency-icons/svg/color/eth.svg'),
+    USDT: () => import('cryptocurrency-icons/svg/color/usdt.svg'),
+    SOL: () => import('cryptocurrency-icons/svg/color/sol.svg'),
+    XRP: () => import('cryptocurrency-icons/svg/color/xrp.svg'),
+    USDC: () => import('cryptocurrency-icons/svg/color/usdc.svg'),
+    LTC: () => import('cryptocurrency-icons/svg/color/ltc.svg'),
+    BNB: () => import('cryptocurrency-icons/svg/color/bnb.svg'),
+    ADA: () => import('cryptocurrency-icons/svg/color/ada.svg'),
+  };
+
+  function CoinIcon({ symbol }: { symbol: string }) {
+    const [iconSrc, setIconSrc] = useState<string | null>(null);
+  
+    useEffect(() => {
+      const loader = iconMap[symbol];
+      if (loader) {
+        loader().then((mod) => setIconSrc(mod.default));
+      }
+    }, [symbol]);
+  
+    if (!iconSrc) return null; // Or loading spinner
+  
+    return <img src={iconSrc} alt={symbol} width={24} height={24} />;
+  }
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -69,13 +95,7 @@ export function TokenSelect({
                   setOpen(false)
                 }}
               >
-                {/* <Check
-                  className={cn(
-                    "mr-2 h-4 w-4",
-                    value === token.value ? "opacity-100" : "opacity-0"
-                  )}
-                /> */}
-                <img src={token.icon} alt={token.label} className="w-6 h-6 mr-2" />
+                <CoinIcon symbol = {token.label.split(" ")[0]}/>
                 {token.label}
               </CommandItem>
             ))}

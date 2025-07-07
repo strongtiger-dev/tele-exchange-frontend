@@ -59,6 +59,7 @@ export const submitExchange = async (payload: ExchangePayload): Promise<Exchange
 
 export const getSymbolList = async (payload: ListPayload): Promise<Token[]> => {
     const res = await api.post<Token[]>("main/symbol_list", payload);
+    console.log("respons arrived");
     return res.data;
 };  
 

@@ -17,11 +17,11 @@ export default function PrivateSwaps() {
     const [fee, setFee] = useState(0);
     const [tokenOptions, setTokenOptions] = useState<Token[]>([]);
 
-    const onChangeToken = async () => {
-        var data = await getRate( { user_id: "KTiger", symbol_1: sendToken, symbol_2: receiveToken });  //send setRate for async data updating
+    const onChangeToken = async ( e: string) => {
+        var data = await getRate( { user_id: "KTiger", symbol_1: e, symbol_2: receiveToken });  //send setRate for async data updating
         setRate( Number(data) );
-        data = await getFee( { user_id: "KTiger", symbol_1: sendToken, symbol_2: receiveToken } );  //send setRate for async data updating
-        setFee( Number(data) );
+        // data = await getFee( { user_id: "KTiger", symbol_1: e, symbol_2: receiveToken } );  //send setRate for async data updating
+        // setFee( Number(data) );
     }
 
     useEffect( () => {
@@ -82,7 +82,7 @@ export default function PrivateSwaps() {
                                     className="!border !border-white !bg-gray-800"
                                     tokens={tokenOptions}
                                     value={sendToken}
-                                    onChange={ (e) => { setSendToken(e); onChangeToken() }}
+                                    onChange={ (e) => { setSendToken(e); onChangeToken(e) }}
                                 />
                             </div>
                         </div>
