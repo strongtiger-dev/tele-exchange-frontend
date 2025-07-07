@@ -8,14 +8,14 @@ import { QRScanner } from "@/components/qr/QRScanner";
 import { StepProgress } from "@/components/common/StepProgress"
 import { Copy } from "lucide-react";
 import { QRCodeDisplay } from "@/components/qr/QRCodeDisplay"
-import { getFee, getRate, sendConfirmInfo, getSymbolList_coin } from "@/API/exchange"
+import { getRate, sendConfirmInfo, getSymbolList } from "@/API/exchange"
 import { socket } from "@/lib/socket"
-
+import WAValidator from "wallet-address-validator"
+import bs58 from "bs58"
 
 type Token = {
     label: string
     value: string
-    icon: string // e.g., "/icons/eth.svg"
 }
 
 export function ExchangeCard(  {p_sendToken, p_receiveToken, p_insize} 
@@ -34,7 +34,7 @@ export function ExchangeCard(  {p_sendToken, p_receiveToken, p_insize}
 
     const [showQR, setShowQR] = useState(false);
     const [receiveAddress, setReceiveAddress] = useState("");
-    const [confirm, setConfirm] = useState(false);
+    const [confirm, setConfirm] = useState(true);
     const [stage, setStage] = useState<"first" | "second" | "third">("first");
     const resultWallet = "888tN...vup3H";
 
@@ -54,9 +54,13 @@ export function ExchangeCard(  {p_sendToken, p_receiveToken, p_insize}
     const onChangeToken = async () => {
         var data = await getRate( { user_id: "KTiger", symbol_1: sendToken, symbol_2: receiveToken });  //send setRate for async data updating
         setRate( Number(data) );
-        data = await getFee( { user_id: "KTiger", symbol_1: sendToken, symbol_2: receiveToken } );  //send setRate for async data updating
-        setFee( Number(data) );
+        // data = await getFee( { user_id: "KTiger", symbol_1: sendToken, symbol_2: receiveToken } );  //send setRate for async data updating
+        // setFee( Number(data) );
     }
+
+    useEffect( () => {
+        onChangeToken();
+    }, [sendToken, receiveToken]);
 
     useEffect( () => {
         setOutsize( rate * insize );
@@ -110,8 +114,8 @@ export function ExchangeCard(  {p_sendToken, p_receiveToken, p_insize}
     useEffect( () => {
         const fetchData = async () => {
             try {
-              //let res = await getSymbolList({ user_id: "KTIGER" });
-              let res = await getSymbolList_coin();
+              let res = await getSymbolList({ user_id: "KTIGER" });
+              //let res = await getSymbolList_coin();
               setTokenOptions(res);
               console.log(res);
             } catch (err) {
@@ -120,6 +124,56 @@ export function ExchangeCard(  {p_sendToken, p_receiveToken, p_insize}
         };
         fetchData();
     }, []);
+
+    useEffect( () => {
+        
+        var address = receiveAddress;
+        var coin = receiveToken.split(" ").at(-1);
+
+        //const currency = WAValidator.findCurrency( coin.toLowerCase() );
+        
+        // if (!currency) {
+        //   console.warn(`Unsupported currency: ${coin}`);
+        //   return false;
+        // }
+
+        
+        
+        if( validateAddress (address, coin) == true )
+        {
+            setConfirm(false);
+            return;
+        }
+        else
+        {
+            setConfirm(true);
+            return;
+        }
+
+    }, [receiveAddress, receiveToken]);
+
+    const validateAddress = (address, chain) => {
+        
+        console.log("address + coin : ", address, chain);
+
+        switch (chain.toLowerCase()) {
+          case 'erc20':
+          case 'bep20':
+          case 'pol':
+            return /^0x[a-fA-F0-9]{40}$/.test(address);
+          case 'trc20':
+            return /^T[a-zA-Z0-9]{33}$/.test(address);
+          case 'sol':
+            try {
+                const decoded = bs58.decode(address);
+                return decoded.length === 32; // Must decode to 32 bytes
+            } catch (e) {
+                return false;
+            }
+        }
+        
+        return WAValidator.validate(address, chain);
+      }
 
     const onSwitchToken = () => {
         var currentToken = sendToken;
@@ -135,7 +189,6 @@ export function ExchangeCard(  {p_sendToken, p_receiveToken, p_insize}
         const cleanAddress = scanned.trim();
         setReceiveAddress(cleanAddress);
         setShowQR(false);
-        setConfirm(true);
     };
 
     const handleCopy = () => {

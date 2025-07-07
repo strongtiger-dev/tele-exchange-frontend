@@ -18,7 +18,7 @@ interface RatePayload {
 }
 
 interface RateResponse {
-    message: string,
+    message: number,
 }
 
 interface FeePayload {
@@ -61,7 +61,7 @@ export const getSymbolList = async (payload: ListPayload): Promise<Token[]> => {
     const res = await api.post<Token[]>("main/symbol_list", payload);
     console.log("respons arrived");
     return res.data;
-};  
+};
 
 export const getSymbolList_coin = async () => {
     const res = await api.get(
@@ -92,7 +92,7 @@ export const getFee = async (payload: FeePayload): Promise<FeeResponse> => {
     const res = await api.post<FeeResponse>("main/commission_fee", payload);
     return res.data;
 };
-  
+
 export const sendConfirmInfo = async (payload: ConfirmPayload): Promise<ConfirmResponse> => {
     const res = await api.post<ConfirmResponse>("main/start_exchange", payload);
     return res.data;
