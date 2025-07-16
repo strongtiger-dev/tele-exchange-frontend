@@ -19,7 +19,8 @@ export default function PrivateSwaps() {
 
     const onChangeToken = async () => {
         var data = await getRate( { user_id: "KTiger", symbol_1: sendToken, symbol_2: receiveToken });  //send setRate for async data updating
-        setRate( Number(data) );
+        console.log(data);
+        setRate( Number(data.rate) );
         // data = await getFee( { user_id: "KTiger", symbol_1: e, symbol_2: receiveToken } );  //send setRate for async data updating
         // setFee( Number(data) );
     }

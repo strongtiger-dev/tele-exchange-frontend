@@ -14,6 +14,7 @@ import {
 import { Button } from "@/components/ui/button"
 import { ChevronsUpDown } from "lucide-react"
 import { cn } from "@/lib/utils"
+import { Badge } from "@/components/ui/badge"
 
 export type Token = {
   label: string
@@ -63,6 +64,23 @@ export function TokenSelect({
     return <img src={iconSrc} alt={symbol} width={24} height={24} />;
   }
 
+
+  const getBadgeColor = (label: string) => {
+    const firstWord = label.split(" ")[0].toUpperCase();
+    switch (firstWord) {
+      case "ERC20":
+        return "#3C3C3D"; // grayish
+      case "BEP20":
+        return "#F7931A"; // orange
+      case "TRC20":
+        return "#26A17B"; // green
+      case "SOL":
+        return "#66F9DF"; // teal
+      default:
+        return "#6B7280"; // Tailwind gray-500 fallback
+    }
+  };
+
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
@@ -71,7 +89,7 @@ export function TokenSelect({
           role="combobox"
           aria-expanded={open}
           className={cn(
-            "w-[120px] h-9 px-3 py-1 rounded-md !bg-gray-700 !text-white text-sm flex items-center justify-between",
+            "w-[150px] h-9 px-3 py-1 rounded-md !bg-gray-700 !text-white text-sm flex items-center justify-between",
             "hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-ring/50",
             className
           )}
@@ -80,7 +98,7 @@ export function TokenSelect({
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
-      <PopoverContent  className="z-50 w-[120px] p-0 bg-gray-700 text-white border border-white shadow-md rounded-md">
+      <PopoverContent  className="z-50 w-[240] p-0 bg-gray-700 text-white border border-white shadow-md rounded-md">
         <Command className = "bg-gray-800 text-white">
           <CommandInput  placeholder="Search token..." />
           <CommandEmpty className = "bg-gray-800 text-white" >No token found.</CommandEmpty>
@@ -96,7 +114,12 @@ export function TokenSelect({
                 }}
               >
                 <CoinIcon symbol = {token.label.split(" ")[0]}/>
-                {token.label}
+                {token.label.split(" ")[0]}
+                {
+                  token.label.split(" ").length > 1 &&
+                  <Badge color={getBadgeColor(token.label.split(" ")[1])}> {token.label.split(" ")[1]} </Badge>
+                }
+                
               </CommandItem>
             ))}
           </CommandGroup>
