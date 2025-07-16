@@ -18,7 +18,9 @@ interface RatePayload {
 }
 
 interface RateResponse {
-    message: number,
+    rate: string,
+    max: string,
+    min: string,
 }
 
 interface FeePayload {

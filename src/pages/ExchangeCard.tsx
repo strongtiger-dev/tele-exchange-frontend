@@ -12,6 +12,8 @@ import { getRate, sendConfirmInfo, getSymbolList } from "@/API/exchange"
 import { socket } from "@/lib/socket"
 import WAValidator from "wallet-address-validator"
 import bs58 from "bs58"
+import { bech32 } from '@scure/base';
+// import initCardanoWasm from '@emurgo/cardano-serialization-lib-browser';
 
 type Token = {
     label: string
@@ -53,7 +55,8 @@ export function ExchangeCard(  {p_sendToken, p_receiveToken, p_insize}
 
     const onChangeToken = async () => {
         var data = await getRate( { user_id: "KTiger", symbol_1: sendToken, symbol_2: receiveToken });  //send setRate for async data updating
-        setRate( Number(data) );
+        console.log(data);
+        setRate( Number(data.rate) );
         // data = await getFee( { user_id: "KTiger", symbol_1: sendToken, symbol_2: receiveToken } );  //send setRate for async data updating
         // setFee( Number(data) );
     }
@@ -137,7 +140,7 @@ export function ExchangeCard(  {p_sendToken, p_receiveToken, p_insize}
         //   return false;
         // }
 
-        
+        coin = coin == undefined ? "" : coin;
         
         if( validateAddress (address, coin) == true )
         {
@@ -152,26 +155,55 @@ export function ExchangeCard(  {p_sendToken, p_receiveToken, p_insize}
 
     }, [receiveAddress, receiveToken]);
 
-    const validateAddress = (address, chain) => {
+    const validateAddress = (address: string, chain: string) => {
         
         console.log("address + coin : ", address, chain);
 
         switch (chain.toLowerCase()) {
-          case 'erc20':
-          case 'bep20':
-          case 'pol':
-            return /^0x[a-fA-F0-9]{40}$/.test(address);
-          case 'trc20':
-            return /^T[a-zA-Z0-9]{33}$/.test(address);
-          case 'sol':
-            try {
-                const decoded = bs58.decode(address);
-                return decoded.length === 32; // Must decode to 32 bytes
-            } catch (e) {
-                return false;
-            }
+            case 'erc20':
+            case 'bep20':
+            case 'pol':
+                return /^0x[a-fA-F0-9]{40}$/.test(address);
+            case 'trc20':
+                return /^T[a-zA-Z0-9]{33}$/.test(address);
+            case 'sol':
+                try {
+                    const decoded = bs58.decode(address);
+                    return decoded.length === 32; // Must decode to 32 bytes
+                } catch (e) {
+                    return false;
+                }
+            case 'bnb':
+                // Binance Chain (BEP-2) address (Bech32, must start with 'bnb')
+                try{
+                    const decoded = bech32.decode(address as `${string}1${string}`);
+                    return decoded.prefix === 'bnb';    
+                } catch (e) {
+                    return false;
+                }
+                
+            case 'cardano':
+            case 'ada':
+                {
+                    // Check if Bech32 address (addr1...)
+                    if (address.startsWith('addr1')) {
+                        const decoded = bech32.decode(address as `${string}1${string}`);
+                        return decoded.prefix === 'addr';
+                    }
+
+                    // Check legacy Base58 format (Byron-era)
+                    if (/^(Ae2|Ddz)[a-zA-Z0-9]{50,}$/.test(address)) {
+                        try {
+                            bs58.decode(address);
+                            return true;
+                        } catch {
+                            return false;
+                        }
+                    }
+                    return false;
+                } 
         }
-        
+
         return WAValidator.validate(address, chain);
       }
 
