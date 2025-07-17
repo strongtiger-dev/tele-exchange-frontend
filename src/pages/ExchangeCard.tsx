@@ -8,6 +8,7 @@ import { QRScanner } from "@/components/qr/QRScanner";
 import { StepProgress } from "@/components/common/StepProgress"
 import { Copy } from "lucide-react";
 import { QRCodeDisplay } from "@/components/qr/QRCodeDisplay"
+import { ScanQrCode } from 'lucide-react';
 import { getRate, sendConfirmInfo, getSymbolList } from "@/API/exchange"
 import { socket } from "@/lib/socket"
 import WAValidator from "wallet-address-validator"
@@ -53,10 +54,14 @@ export function ExchangeCard(  {p_sendToken, p_receiveToken, p_insize}
     //General
     const [tokenOptions, setTokenOptions] = useState<Token[]>([]);
 
+    const Roundby5 = (value: number) => {
+        return Math.round(value * 1e5) /1e5;
+    }
+
     const onChangeToken = async () => {
         var data = await getRate( { user_id: "KTiger", symbol_1: sendToken, symbol_2: receiveToken });  //send setRate for async data updating
         console.log(data);
-        setRate( Number(data.rate) );
+        setRate( Roundby5( Number(data.rate) ));
         // data = await getFee( { user_id: "KTiger", symbol_1: sendToken, symbol_2: receiveToken } );  //send setRate for async data updating
         // setFee( Number(data) );
     }
@@ -66,7 +71,7 @@ export function ExchangeCard(  {p_sendToken, p_receiveToken, p_insize}
     }, [sendToken, receiveToken]);
 
     useEffect( () => {
-        setOutsize( rate * insize );
+        setOutsize( Roundby5 (rate * insize) );
     } , [rate])
 
     
@@ -230,8 +235,8 @@ export function ExchangeCard(  {p_sendToken, p_receiveToken, p_insize}
     };
 
     const handleChangeInsize = (e: React.ChangeEvent<HTMLInputElement> ) => {
-        setInsize( Number(e.target.value)); 
-        setOutsize( rate * Number(e.target.value) );
+        setInsize( Roundby5( Number(e.target.value) ) ); 
+        setOutsize( Roundby5 ( rate * Number(e.target.value) ) );
     }
 
     const handleConfirm = async () => {
@@ -299,9 +304,9 @@ export function ExchangeCard(  {p_sendToken, p_receiveToken, p_insize}
                     <div>
                         <label className="text-sm text-gray-400 block mb-1">Recipient Wallet</label>
                         <div className="flex items-center gap-2">
-                            <Input placeholder="Enter XMR payout address" value={receiveAddress} onChange={ (e) => setReceiveAddress (e.target.value)} className="!bg-gray-800 text-white border border-white" />
-                            <Button size="icon" variant="ghost" onClick={ () => { setShowQR(prev => !prev) }} className="bg-transparent hover:bg-[#333]">
-                            📷
+                            <Input placeholder="Enter XMR payout address" value={receiveAddress} onChange={ (e) => setReceiveAddress (e.target.value)} className="!bg-gray-800 text-white !border !border-white" />
+                            <Button size="icon" variant="outline" onClick={ () => { setShowQR(prev => !prev) }} className="bg-transparent hover:bg-[#333] !border !border-white">
+                                <ScanQrCode />
                             </Button>
                         </div>
                     </div>

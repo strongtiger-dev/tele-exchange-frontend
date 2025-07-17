@@ -17,10 +17,14 @@ export default function PrivateSwaps() {
     const [fee, setFee] = useState(0);
     const [tokenOptions, setTokenOptions] = useState<Token[]>([]);
 
+    const Roundby5 = (value: number) => {
+        return Math.round(value * 1e5) /1e5;
+    }
+
     const onChangeToken = async () => {
         var data = await getRate( { user_id: "KTiger", symbol_1: sendToken, symbol_2: receiveToken });  //send setRate for async data updating
         console.log(data);
-        setRate( Number(data.rate) );
+        setRate( Roundby5( Number(data.rate) ) );
         // data = await getFee( { user_id: "KTiger", symbol_1: e, symbol_2: receiveToken } );  //send setRate for async data updating
         // setFee( Number(data) );
     }
@@ -30,7 +34,7 @@ export default function PrivateSwaps() {
     }, [sendToken, receiveToken]);
 
     useEffect( () => {
-        setOutsize( rate * insize );
+        setOutsize( Roundby5 ( rate * insize ) );
     } , [rate])
 
     useEffect( () => {
@@ -58,8 +62,8 @@ export default function PrivateSwaps() {
     // }
 
     const handleChangeInsize = (e: React.ChangeEvent<HTMLInputElement> ) => {
-        setInsize( Number(e.target.value) ); 
-        setOutsize( rate * Number(e.target.value) );
+        setInsize( Roundby5( Number(e.target.value) ) ); 
+        setOutsize( Roundby5( rate * Number(e.target.value) ) );
     }
 
     return (

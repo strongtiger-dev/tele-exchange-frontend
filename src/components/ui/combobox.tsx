@@ -39,29 +39,67 @@ export function TokenSelect({
 
   const iconMap: Record<string, () => Promise<any>> = {
     BTC: () => import('cryptocurrency-icons/svg/color/btc.svg'),
+    TRC20: () => import('cryptocurrency-icons/svg/color/trx.svg'),
+    ERC20: () => import('cryptocurrency-icons/svg/color/eth.svg'),
     ETH: () => import('cryptocurrency-icons/svg/color/eth.svg'),
     USDT: () => import('cryptocurrency-icons/svg/color/usdt.svg'),
     SOL: () => import('cryptocurrency-icons/svg/color/sol.svg'),
     XRP: () => import('cryptocurrency-icons/svg/color/xrp.svg'),
     USDC: () => import('cryptocurrency-icons/svg/color/usdc.svg'),
     LTC: () => import('cryptocurrency-icons/svg/color/ltc.svg'),
+    BEP20: () => import('cryptocurrency-icons/svg/color/bnb.svg'),
     BNB: () => import('cryptocurrency-icons/svg/color/bnb.svg'),
     ADA: () => import('cryptocurrency-icons/svg/color/ada.svg'),
   };
 
-  function CoinIcon({ symbol }: { symbol: string }) {
-    const [iconSrc, setIconSrc] = useState<string | null>(null);
+  type CoinIconProps = {
+    symbol: string; // Example: 'usdt_eth', 'usdt_trc', or 'eth'
+  };
+
+  function CoinIcon({ symbol }: CoinIconProps) {
+    const [mainIconSrc, setMainIconSrc] = useState<string | null>(null);
+    const [chainIconSrc, setChainIconSrc] = useState<string | null>(null);
   
     useEffect(() => {
-      const loader = iconMap[symbol];
-      if (loader) {
-        loader().then((mod) => setIconSrc(mod.default));
+      const [base, chain] = symbol.toUpperCase().split('_');
+  
+      const loadMain = iconMap[base];
+      const loadChain = chain ? iconMap[chain] : null;
+  
+      if (loadMain) {
+        loadMain().then((mod) => setMainIconSrc(mod.default));
+      }
+  
+      if (loadChain) {
+        loadChain().then((mod) => setChainIconSrc(mod.default));
+      } else {
+        setChainIconSrc(null);
       }
     }, [symbol]);
   
-    if (!iconSrc) return null; // Or loading spinner
+    if (!mainIconSrc) return null;
   
-    return <img src={iconSrc} alt={symbol} width={24} height={24} />;
+    return (
+      <div style={{ position: 'relative', width: 24, height: 24 }}>
+        <img src={mainIconSrc} alt={symbol} width={24} height={24} />
+        {chainIconSrc && (
+          <img
+            src={chainIconSrc}
+            alt="chain"
+            width={12}
+            height={12}
+            style={{
+              position: 'absolute',
+              bottom: 0,
+              right: 0,
+              borderRadius: '50%',
+              background: 'white', // optional: gives white background behind chain icon
+              boxShadow: '0 0 1px rgba(0,0,0,0.4)',
+            }}
+          />
+        )}
+      </div>
+    );
   }
 
 
@@ -113,7 +151,7 @@ export function TokenSelect({
                   setOpen(false)
                 }}
               >
-                <CoinIcon symbol = {token.label.split(" ")[0]}/>
+                <CoinIcon symbol = {`${token.label.split(" ")[0]}_${token.label.split(" ")[1]}`}/>
                 {token.label.split(" ")[0]}
                 {
                   token.label.split(" ").length > 1 &&
